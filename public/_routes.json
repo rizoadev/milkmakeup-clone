@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "include": [
+    "/_next/static/*",
+    "/api/*"
+  ],
+  "exclude": [
+    "/_headers",
+    "/_trailingSlash"
+  ]
+}

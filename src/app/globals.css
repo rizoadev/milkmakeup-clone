@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+}
+
+* {
+  border-radius: 0 !important;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.header-black {
+  background: #000;
+  color: #fff;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-wrap { overflow: hidden; }
+.ticker-track {
+  display: flex;
+  animation: ticker 20s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 2rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.btn-milk {
+  background: #000;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-milk:hover { background: #333; }
+
+.btn-outline {
+  background: transparent;
+  color: #000;
+  border: 1px solid #000;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.btn-outline:hover { background: #000; color: #fff; }
+
+.input-milk {
+  border: 1px solid #ddd;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  width: 100%;
+  outline: none;
+}
+.input-milk:focus { border-color: #000; }
+
+.footer-milk {
+  background: #000;
+  color: #fff;
+}
+
+.product-card-milk {
+  transition: opacity 0.2s;
+}
+.product-card-milk:hover { opacity: 0.9; }
+.product-image-wrap {
+  aspect-ratio: 4/5;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.link-milk {
+  color: #000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.link-milk:hover { opacity: 0.7; }
