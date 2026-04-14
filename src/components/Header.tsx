@@ -13,6 +13,7 @@ const navItems = [
   { label: "Lips", href: "/lips" },
   { label: "Eyes", href: "/eyes" },
   { label: "Sets", href: "/sets" },
+  { label: "Support", href: "/account/support" },
 ];
 
 const tickerItems = [
