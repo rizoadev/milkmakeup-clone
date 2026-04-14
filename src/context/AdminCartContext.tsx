@@ -12,23 +12,57 @@ type Product = {
   category: string;
   description: string;
   sku: string;
+  minOrder: number;
+};
+
+type Distributor = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  tier: "bronze" | "silver" | "gold" | "platinum";
+  territory: string;
+  creditLimit: number;
+  discountPercent: number;
+  status: "active" | "inactive";
 };
 
 type CartItem = Product & { quantity: number };
 
 type AdminCartContextType = {
   items: CartItem[];
+  distributor: Distributor | null;
+  setDistributor: (d: Distributor | null) => void;
   addToCart: (product: Product) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, qty: number) => void;
   clearCart: () => void;
   subtotal: number;
+  getDiscountedPrice: (price: number) => number;
 };
 
 const AdminCartContext = createContext<AdminCartContextType | null>(null);
 
+const tiers = {
+  bronze: { discount: 0 },
+  silver: { discount: 0.05 },
+  gold: { discount: 0.10 },
+  platinum: { discount: 0.15 },
+};
+
 export function AdminCartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [distributor, setDistributor] = useState<Distributor | null>({
+    id: "DIST-001",
+    name: "PT Distributor Utama",
+    email: "admin@distributor.com",
+    phone: "+62 812 3456 7890",
+    tier: "silver",
+    territory: "Jabodetabek",
+    creditLimit: 50000000,
+    discountPercent: 25,
+    status: "active",
+  });
 
   const addToCart = (product: Product) => {
     setItems((prev) => {
@@ -58,11 +92,30 @@ export function AdminCartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => setItems([]);
 
-  const subtotal = items.reduce((sum, item) => sum + item.wholesalePrice * item.quantity, 0);
+  const getDiscountedPrice = (price: number): number => {
+    if (!distributor) return price;
+    const discount = tiers[distributor.tier].discount;
+    return Math.round(price * (1 - discount));
+  };
+
+  const subtotal = items.reduce(
+    (sum, item) => sum + getDiscountedPrice(item.wholesalePrice) * item.quantity,
+    0
+  );
 
   return (
     <AdminCartContext.Provider
-      value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, subtotal }}
+      value={{
+        items,
+        distributor,
+        setDistributor,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        subtotal,
+        getDiscountedPrice,
+      }}
     >
       {children}
     </AdminCartContext.Provider>
@@ -87,6 +140,7 @@ export const distributorProducts = [
     category: "Mascara",
     description: "Our best-selling ultra-black mascara for dramatic volume.",
     sku: "MW-MASC-001",
+    minOrder: 10,
   },
   {
     id: "2",
@@ -99,6 +153,7 @@ export const distributorProducts = [
     category: "Lip",
     description: "Hydrating lip gloss with a subtle pink tint.",
     sku: "MW-LIP-001",
+    minOrder: 10,
   },
   {
     id: "3",
@@ -111,6 +166,7 @@ export const distributorProducts = [
     category: "Primer",
     description: "24-hour waterproof primer for all-day wear.",
     sku: "MW-PRIM-001",
+    minOrder: 10,
   },
   {
     id: "4",
@@ -121,8 +177,9 @@ export const distributorProducts = [
     stock: 560,
     image: "https://placehold.co/400x500/f5f5f5/000?text=Cloud+Paint",
     category: "Blush",
-    description: "cream blush for a natural, dewy glow.",
+    description: "Cream blush for a natural, dewy glow.",
     sku: "MW-BLUSH-001",
+    minOrder: 10,
   },
   {
     id: "5",
@@ -135,6 +192,7 @@ export const distributorProducts = [
     category: "Skincare",
     description: "Lightweight daily moisturizer with SPF 30.",
     sku: "MW-SKIN-001",
+    minOrder: 10,
   },
   {
     id: "6",
@@ -147,6 +205,7 @@ export const distributorProducts = [
     category: "Mascara",
     description: "Instant lash lift serum and mascara.",
     sku: "MW-MASC-002",
+    minOrder: 10,
   },
   {
     id: "7",
@@ -159,6 +218,7 @@ export const distributorProducts = [
     category: "Lip",
     description: "Hydrating lip balm with vitamin E.",
     sku: "MW-LIP-002",
+    minOrder: 20,
   },
   {
     id: "8",
@@ -171,6 +231,7 @@ export const distributorProducts = [
     category: "Eyes",
     description: "Waterproof eye pencil for precise lines.",
     sku: "MW-EYE-001",
+    minOrder: 10,
   },
 ];
 

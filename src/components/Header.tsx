@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { ShoppingBag, Menu, X, User, LogOut } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 const navItems = [
   { label: "Shop", href: "/shop" },
@@ -24,6 +25,7 @@ const tickerItems = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { items } = useCart();
+  const { isAuthenticated, logout } = useAuth();
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -60,15 +62,26 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Cart */}
-        <Link href="/cart" className="relative">
-          <ShoppingBag size={24} color="#fff" />
-          {cartCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-white text-black text-xs w-5 h-5 flex items-center justify-center font-bold">
-              {cartCount}
-            </span>
+        {/* Right side - Account + Cart */}
+        <div className="flex items-center gap-4">
+          {isAuthenticated ? (
+            <Link href="/account" className="flex items-center gap-1">
+              <User size={20} color="#fff" />
+            </Link>
+          ) : (
+            <Link href="/login" className="text-xs text-white uppercase tracking-widest">
+              Login
+            </Link>
           )}
-        </Link>
+          <Link href="/cart" className="relative">
+            <ShoppingBag size={24} color="#fff" />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-white text-black text-xs w-5 h-5 flex items-center justify-center font-bold">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+        </div>
       </div>
 
       {/* Mobile Drawer */}
@@ -105,6 +118,13 @@ export default function Header() {
                     {item.label}
                   </Link>
                 ))}
+                <div className="border-t border-gray-800 pt-4">
+                  {isAuthenticated ? (
+                    <Link href="/account" className="block text-white text-sm">My Account</Link>
+                  ) : (
+                    <Link href="/login" className="block text-white text-sm">Login</Link>
+                  )}
+                </div>
               </nav>
             </motion.div>
           </>
